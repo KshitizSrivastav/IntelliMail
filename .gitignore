@@ -73,3 +73,7 @@ start.bat
 start.sh
 SETUP.md
 restart.bat
+start-backend.bat
+start-dev.bat
+
+test_backend.py
