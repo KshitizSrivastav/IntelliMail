@@ -20,7 +20,7 @@
    - **Region**: `Oregon` (free tier)
    - **Branch**: `main`
    - **Root Directory**: `backend`
-   - **Build Command**: `pip install --upgrade pip && pip install -r requirements.txt`
+   - **Build Command**: `pip install --upgrade pip setuptools wheel && pip install -r requirements.txt`
    - **Start Command**: `python -m uvicorn main:app --host 0.0.0.0 --port $PORT`
 
 ### 3. Environment Variables (Critical!)
@@ -119,10 +119,13 @@ Commit and push to redeploy.
 
 ### Build Errors on Render:
 If you see "metadata-generation-failed" errors:
-1. Use the updated requirements.txt with compatible versions
-2. Try the alternative requirements-render.txt file
-3. Set Python version to 3.9.18 in environment variables
-4. Add `PIP_DISABLE_PIP_VERSION_CHECK=1` environment variable
+1. ✅ **Updated requirements.txt** with older, stable package versions
+2. ✅ **Removed Rust dependencies** that cause build issues  
+3. ✅ **Use Python 3.9.0** (set in environment variables)
+4. ✅ **Updated OpenAI code** to use older API format
+5. Add `PIP_NO_CACHE_DIR=1` environment variable if needed
+
+**The current requirements.txt should now work without build errors!**
 
 ### CORS Errors:
 - Check exact frontend URL in backend CORS config

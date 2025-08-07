@@ -8,7 +8,6 @@ from config import OPENAI_API_KEY
 class GPTService:
     def __init__(self):
         openai.api_key = OPENAI_API_KEY
-        self.client = openai.OpenAI(api_key=OPENAI_API_KEY)
     
     async def summarize_email(self, content: str, max_length: int = 150) -> Dict:
         """
@@ -34,7 +33,7 @@ class GPTService:
             }}
             """
             
-            response = self.client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": "You are a helpful email summarization assistant. Always respond with valid JSON."},
@@ -80,7 +79,7 @@ class GPTService:
             }}
             """
             
-            response = self.client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": "You are a helpful email thread summarization assistant. Always respond with valid JSON."},
@@ -143,7 +142,7 @@ class GPTService:
             Generate a reply that sounds natural and human-like. Do not include a subject line.
             """
             
-            response = self.client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": f"You are a helpful email writing assistant. Write professional emails in a {tone} tone."},
@@ -188,7 +187,7 @@ class GPTService:
             Provide the refined version:
             """
             
-            response = self.client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": f"You are a helpful email editing assistant. Refine emails to match specific tones while maintaining the core message."},
@@ -234,7 +233,7 @@ class GPTService:
             }}
             """
             
-            response = self.client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": "You are a tone analysis expert. Analyze text tone and provide detailed insights in JSON format."},
@@ -273,7 +272,7 @@ class GPTService:
             ["action1", "action2", "action3"]
             """
             
-            response = self.client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": "You are an action item extraction specialist. Extract clear, actionable tasks from email content."},
