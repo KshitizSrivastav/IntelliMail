@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, User, Clock, Sparkles, MessageSquare, Send, RefreshCw } from 'lucide-react';
+import { ArrowLeft, User, Clock, Sparkles, MessageSquare } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -15,13 +15,7 @@ const EmailView = ({ user }) => {
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [showReplyBox, setShowReplyBox] = useState(false);
 
-  useEffect(() => {
-    if (emailId) {
-      loadEmailDetail();
-    }
-  }, [emailId]);
-
-  const loadEmailDetail = async () => {
+  const loadEmailDetail = useCallback(async () => {
     try {
       setLoading(true);
       const emailData = await emailService.getEmailDetail(emailId);
@@ -38,7 +32,13 @@ const EmailView = ({ user }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [emailId]);
+
+  useEffect(() => {
+    if (emailId) {
+      loadEmailDetail();
+    }
+  }, [emailId, loadEmailDetail]);
 
   const handleSummarize = async () => {
     try {

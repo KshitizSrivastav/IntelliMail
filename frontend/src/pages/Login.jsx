@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Mail, Sparkles, LogIn, Shield, Zap, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authService } from '../services/authService';
@@ -6,7 +6,23 @@ import DebugAuth from '../components/DebugAuth';
 
 const Login = ({ onLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [authUrl, setAuthUrl] = useState('');
+
+  const handleGoogleCallback = useCallback(async (code) => {
+    setIsLoading(true);
+    try {
+      const result = await authService.authenticateWithGoogle(code);
+      toast.success('Successfully authenticated!');
+      onLogin(result.user_info, result.access_token);
+      
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } catch (error) {
+      console.error('Authentication error:', error);
+      toast.error('Authentication failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [onLogin]);
 
   useEffect(() => {
     // Check if we're returning from Google OAuth
@@ -24,24 +40,7 @@ const Login = ({ onLogin }) => {
     if (code) {
       handleGoogleCallback(code);
     }
-  }, []);
-
-  const handleGoogleCallback = async (code) => {
-    setIsLoading(true);
-    try {
-      const result = await authService.authenticateWithGoogle(code);
-      toast.success('Successfully authenticated!');
-      onLogin(result.user_info, result.access_token);
-      
-      // Clean up URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } catch (error) {
-      console.error('Authentication error:', error);
-      toast.error('Authentication failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [handleGoogleCallback]);
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
@@ -165,13 +164,19 @@ const Login = ({ onLogin }) => {
               <div className="text-center">
                 <p className="text-sm text-gray-500">
                   By signing in, you agree to our{' '}
-                  <a href="#" className="text-blue-600 hover:text-blue-700">
+                  <button 
+                    onClick={() => window.open('/terms', '_blank')}
+                    className="text-blue-600 hover:text-blue-700 underline bg-transparent border-none cursor-pointer"
+                  >
                     Terms of Service
-                  </a>{' '}
+                  </button>{' '}
                   and{' '}
-                  <a href="#" className="text-blue-600 hover:text-blue-700">
+                  <button 
+                    onClick={() => window.open('/privacy', '_blank')}
+                    className="text-blue-600 hover:text-blue-700 underline bg-transparent border-none cursor-pointer"
+                  >
                     Privacy Policy
-                  </a>
+                  </button>
                 </p>
               </div>
             </div>

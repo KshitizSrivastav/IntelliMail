@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { RefreshCw, Search, Filter, Sparkles, Mail, Clock, User } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { RefreshCw, Search, Filter, Sparkles, Mail, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import EmailCard from '../components/EmailCard';
@@ -14,11 +14,7 @@ const Dashboard = ({ user }) => {
   const [filterType, setFilterType] = useState('all');
   const [summaryLoading, setSummaryLoading] = useState({});
 
-  useEffect(() => {
-    loadEmails();
-  }, []);
-
-  const loadEmails = async (showToast = false) => {
+  const loadEmails = useCallback(async (showToast = false) => {
     try {
       if (showToast) {
         setRefreshing(true);
@@ -46,7 +42,11 @@ const Dashboard = ({ user }) => {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, [searchQuery, filterType]);
+
+  useEffect(() => {
+    loadEmails();
+  }, [loadEmails]);
 
   const handleSearch = () => {
     loadEmails();
