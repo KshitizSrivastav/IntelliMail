@@ -131,6 +131,13 @@ If you still see Python version issues:
 - Add `PYTHON_VERSION=3.11.0` in Render environment variables
 - Check that `runtime.txt` contains `python-3.11.0`
 
+### Frontend Issues
+If you see 404 errors on Vercel:
+1. ✅ **Fixed vercel.json** - Added proper rewrites for React Router
+2. ✅ **Added _redirects file** - Backup routing configuration
+3. Clear browser cache and try again
+4. Check Vercel function logs for errors
+
 ### CORS Errors:
 - Check exact frontend URL in backend CORS config
 - Ensure no trailing slashes
