@@ -20,8 +20,8 @@
    - **Region**: `Oregon` (free tier)
    - **Branch**: `main`
    - **Root Directory**: `backend`
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+   - **Build Command**: `pip install --upgrade pip && pip install -r requirements.txt`
+   - **Start Command**: `python -m uvicorn main:app --host 0.0.0.0 --port $PORT`
 
 ### 3. Environment Variables (Critical!)
 Add these in Render dashboard:
@@ -116,6 +116,13 @@ Commit and push to redeploy.
 - Global CDN
 
 ## 🚨 Troubleshooting
+
+### Build Errors on Render:
+If you see "metadata-generation-failed" errors:
+1. Use the updated requirements.txt with compatible versions
+2. Try the alternative requirements-render.txt file
+3. Set Python version to 3.9.18 in environment variables
+4. Add `PIP_DISABLE_PIP_VERSION_CHECK=1` environment variable
 
 ### CORS Errors:
 - Check exact frontend URL in backend CORS config

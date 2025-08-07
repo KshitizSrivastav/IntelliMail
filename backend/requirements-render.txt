@@ -1,14 +1,25 @@
+# Core FastAPI dependencies
 fastapi==0.103.2
-uvicorn[standard]==0.23.2
-python-multipart==0.0.6
+uvicorn==0.23.2
+
+# Authentication & Security
 python-jose[cryptography]==3.3.0
+python-multipart==0.0.6
+
+# Google APIs
 google-auth==2.22.0
 google-auth-oauthlib==1.0.0
-google-auth-httplib2==0.1.0
 google-api-python-client==2.100.0
+
+# OpenAI
 openai==0.28.1
+
+# Utilities
 requests==2.31.0
 python-dotenv==1.0.0
 pydantic==2.4.2
 email-validator==2.0.0
+
+# Dependencies
 cryptography==41.0.4
+certifi==2023.7.22
