@@ -3,13 +3,23 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Environment detection
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
 # OpenAI Configuration
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "your-openai-api-key-here")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+if not OPENAI_API_KEY and ENVIRONMENT == "production":
+    print("⚠️  WARNING: OPENAI_API_KEY not set")
 
 # Google OAuth2 Configuration
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "your-google-client-id")
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "your-google-client-secret")
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
 GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:8000/auth/callback")
+
+# JWT Configuration
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-here")
+if JWT_SECRET_KEY == "your-secret-key-here" and ENVIRONMENT == "production":
+    print("⚠️  WARNING: JWT_SECRET_KEY using default value")
 
 # Gmail API Configuration
 GMAIL_SCOPES = [

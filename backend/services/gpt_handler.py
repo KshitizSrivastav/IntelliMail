@@ -2,17 +2,35 @@ import openai
 from typing import Dict, List, Optional
 import json
 import asyncio
+import logging
 
 from config import OPENAI_API_KEY
 
+logger = logging.getLogger(__name__)
+
 class GPTService:
     def __init__(self):
-        self.client = openai.OpenAI(api_key=OPENAI_API_KEY)
+        try:
+            if not OPENAI_API_KEY:
+                logger.warning("⚠️  OpenAI API key not provided")
+                self.client = None
+            else:
+                self.client = openai.OpenAI(api_key=OPENAI_API_KEY)
+                logger.info("✅ OpenAI client initialized")
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize OpenAI client: {e}")
+            self.client = None
     
     async def summarize_email(self, content: str, max_length: int = 150) -> Dict:
         """
         Summarize email content using GPT-4
         """
+        if not self.client:
+            return {
+                "summary": "OpenAI service not available",
+                "key_points": ["OpenAI API key not configured"]
+            }
+            
         try:
             prompt = f"""
             You are an expert email assistant. Summarize the following email content in a clear, concise manner.

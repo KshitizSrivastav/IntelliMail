@@ -3,9 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
 import os
+import logging
 
 from routes import email, summarize, reply, auth
 from config import APP_NAME, APP_VERSION
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -18,6 +23,10 @@ app = FastAPI(
 
 # Environment detection
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
+logger.info(f"🚀 Starting {APP_NAME} v{APP_VERSION}")
+logger.info(f"🌍 Environment: {ENVIRONMENT}")
+logger.info(f"🔌 Port: {os.getenv('PORT', '8000')}")
 
 # Dynamic CORS origins based on environment
 if ENVIRONMENT == "production":
@@ -33,8 +42,7 @@ else:
         "http://127.0.0.1:3000"
     ]
 
-print(f"🌍 Environment: {ENVIRONMENT}")
-print(f"🔗 Allowed Origins: {allowed_origins}")
+logger.info(f"🔗 Allowed Origins: {allowed_origins}")
 
 # Add CORS middleware
 app.add_middleware(
@@ -45,33 +53,59 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-app.include_router(email.router, prefix="/emails", tags=["Email Management"])
-app.include_router(summarize.router, prefix="/summarize", tags=["AI Summarization"])
-app.include_router(reply.router, prefix="/reply", tags=["AI Reply Generation"])
+# Include routers with error handling
+try:
+    app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+    logger.info("✅ Auth routes loaded")
+except Exception as e:
+    logger.error(f"❌ Failed to load auth routes: {e}")
+
+try:
+    app.include_router(email.router, prefix="/emails", tags=["Email Management"])
+    logger.info("✅ Email routes loaded")
+except Exception as e:
+    logger.error(f"❌ Failed to load email routes: {e}")
+
+try:
+    app.include_router(summarize.router, prefix="/summarize", tags=["AI Summarization"])
+    logger.info("✅ Summarize routes loaded")
+except Exception as e:
+    logger.error(f"❌ Failed to load summarize routes: {e}")
+
+try:
+    app.include_router(reply.router, prefix="/reply", tags=["AI Reply Generation"])
+    logger.info("✅ Reply routes loaded")
+except Exception as e:
+    logger.error(f"❌ Failed to load reply routes: {e}")
 
 @app.get("/")
 async def root():
-    """Health check endpoint"""
+    """Simple root endpoint"""
     return {
-        "message": "Welcome to IntelliMail API",
-        "version": APP_VERSION,
+        "message": "IntelliMail API is running",
         "status": "healthy",
         "environment": ENVIRONMENT,
-        "docs": "/docs"
+        "version": APP_VERSION
     }
 
 @app.get("/health")
 async def health_check():
     """Detailed health check"""
-    return {
-        "status": "healthy",
-        "service": APP_NAME,
-        "version": APP_VERSION,
-        "environment": ENVIRONMENT,
-        "cors_origins": allowed_origins
-    }
+    try:
+        return {
+            "status": "healthy",
+            "service": APP_NAME,
+            "version": APP_VERSION,
+            "environment": ENVIRONMENT,
+            "cors_origins": allowed_origins,
+            "timestamp": "2025-08-07"
+        }
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return {
+            "status": "unhealthy",
+            "error": str(e)
+        }
 
 # Global exception handler
 @app.exception_handler(Exception)
