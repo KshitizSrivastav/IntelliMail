@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Send, X, Sparkles, RefreshCw, Wand2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -30,19 +30,6 @@ const ReplyBox = ({ originalEmail, onSend, onCancel }) => {
     { id: 'medium', name: 'Medium', description: '100-200 words' },
     { id: 'long', name: 'Long', description: '200-300 words' }
   ];
-
-  useEffect(() => {
-    loadAvailableTones();
-  }, []);
-
-  const loadAvailableTones = async () => {
-    try {
-      const tones = await aiService.getAvailableTones();
-      setAvailableTones(tones.available_tones || {});
-    } catch (error) {
-      console.error('Failed to load tones:', error);
-    }
-  };
 
   const generateReply = async () => {
     try {
