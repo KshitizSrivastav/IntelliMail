@@ -1,11 +1,17 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// Dynamic API URL based on environment
+const API_BASE_URL = process.env.NODE_ENV === 'production'
+  ? process.env.REACT_APP_API_URL || 'https://intellimail-backend.onrender.com'
+  : 'http://localhost:8000';
+
+console.log('🔗 API Base URL:', API_BASE_URL);
+console.log('🌍 Environment:', process.env.NODE_ENV);
 
 // Create axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000,
+  timeout: 30000, // 30 seconds timeout for Render cold starts
   headers: {
     'Content-Type': 'application/json',
   },
@@ -14,6 +20,7 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
+    console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`);
     const token = localStorage.getItem('access_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

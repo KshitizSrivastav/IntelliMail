@@ -2,9 +2,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
+import os
 
 from routes import email, summarize, reply, auth
-from config import CORS_ORIGINS, APP_NAME, APP_VERSION
+from config import APP_NAME, APP_VERSION
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -15,10 +16,30 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+# Environment detection
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
+# Dynamic CORS origins based on environment
+if ENVIRONMENT == "production":
+    allowed_origins = [
+        "https://intellimail.vercel.app",  # Replace with your actual Vercel domain
+        "https://*.vercel.app",  # Allow all Vercel preview deployments
+        "https://intellimail-frontend.vercel.app",  # Alternative naming
+    ]
+else:
+    # Development origins
+    allowed_origins = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000"
+    ]
+
+print(f"🌍 Environment: {ENVIRONMENT}")
+print(f"🔗 Allowed Origins: {allowed_origins}")
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
@@ -37,6 +58,7 @@ async def root():
         "message": "Welcome to IntelliMail API",
         "version": APP_VERSION,
         "status": "healthy",
+        "environment": ENVIRONMENT,
         "docs": "/docs"
     }
 
@@ -46,7 +68,9 @@ async def health_check():
     return {
         "status": "healthy",
         "service": APP_NAME,
-        "version": APP_VERSION
+        "version": APP_VERSION,
+        "environment": ENVIRONMENT,
+        "cors_origins": allowed_origins
     }
 
 # Global exception handler
@@ -56,16 +80,17 @@ async def global_exception_handler(request, exc):
         status_code=500,
         content={
             "error": "Internal Server Error",
-            "message": str(exc),
+            "message": str(exc) if ENVIRONMENT == "development" else "An error occurred",
             "detail": "An unexpected error occurred"
         }
     )
 
 if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8000))
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8000,
-        reload=True,
+        port=port,
+        reload=ENVIRONMENT == "development",
         log_level="info"
     )
