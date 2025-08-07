@@ -135,20 +135,20 @@ const Layout = ({ children, user, onLogout }) => {
                       <p className="text-sm font-medium text-gray-700">{user?.name || 'User'}</p>
                       <p className="text-xs text-gray-500">{user?.email}</p>
                     </div>
-                    <a
-                      href="#"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    <button
+                      type="button"
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       <User className="mr-3 h-4 w-4" />
                       Profile
-                    </a>
-                    <a
-                      href="#"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    </button>
+                    <button
+                      type="button"
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       <Settings className="mr-3 h-4 w-4" />
                       Settings
-                    </a>
+                    </button>
                     <button
                       onClick={handleLogout}
                       className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

@@ -10,9 +10,6 @@ import AuthCallback from './pages/AuthCallback';
 import Layout from './components/Layout';
 import LoadingSpinner from './components/LoadingSpinner';
 
-// Services
-import { authService } from './services/authService';
-
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);

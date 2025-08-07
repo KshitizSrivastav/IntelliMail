@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, User, Sparkles, MessageSquare, Eye, EyeOff } from 'lucide-react';
+import { Clock, User, Sparkles, MessageSquare, Eye } from 'lucide-react';
 import LoadingSpinner from './LoadingSpinner';
 
 const EmailCard = ({ email, onSummarize, onMarkAsRead, summaryLoading }) => {

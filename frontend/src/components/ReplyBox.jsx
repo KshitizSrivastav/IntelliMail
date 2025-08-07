@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Send, X, Sparkles, RefreshCw, Edit3, Wand2 } from 'lucide-react';
+import { Send, X, Sparkles, RefreshCw, Wand2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import LoadingSpinner from './LoadingSpinner';
@@ -11,7 +11,6 @@ const ReplyBox = ({ originalEmail, onSend, onCancel }) => {
   const [selectedLength, setSelectedLength] = useState('medium');
   const [generating, setGenerating] = useState(false);
   const [sending, setSending] = useState(false);
-  const [availableTones, setAvailableTones] = useState([]);
   const [customInstructions, setCustomInstructions] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
 
