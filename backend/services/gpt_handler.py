@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 import json
 import asyncio
 import logging
+import os
 
 from config import OPENAI_API_KEY
 
@@ -19,10 +20,30 @@ class GPTService:
                 logger.error("❌ OpenAI API key not provided")
                 self.client = None
             else:
-                self.client = openai.OpenAI(api_key=OPENAI_API_KEY)
-                logger.info("✅ OpenAI client initialized successfully")
+                # Clear any proxy environment variables that might interfere
+                proxy_vars = ['HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy', 'https_proxy']
+                original_proxies = {}
+                for var in proxy_vars:
+                    if var in os.environ:
+                        original_proxies[var] = os.environ[var]
+                        del os.environ[var]
+                        logger.info(f"🔧 Temporarily cleared proxy variable: {var}")
+                
+                try:
+                    # Initialize OpenAI client with minimal configuration
+                    self.client = openai.OpenAI(
+                        api_key=OPENAI_API_KEY,
+                        timeout=30.0
+                    )
+                    logger.info("✅ OpenAI client initialized successfully")
+                finally:
+                    # Restore proxy environment variables
+                    for var, value in original_proxies.items():
+                        os.environ[var] = value
         except Exception as e:
             logger.error(f"❌ Failed to initialize OpenAI client: {e}")
+            logger.error(f"❌ Error type: {type(e).__name__}")
+            logger.error(f"❌ Error details: {str(e)}")
             self.client = None
     
     async def summarize_email(self, content: str, max_length: int = 150) -> Dict:
