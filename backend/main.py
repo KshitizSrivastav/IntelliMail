@@ -91,12 +91,15 @@ async def root():
 async def health_check():
     """Detailed health check"""
     try:
+        from config import OPENAI_API_KEY
         return {
             "status": "healthy",
             "service": APP_NAME,
             "version": APP_VERSION,
             "environment": ENVIRONMENT,
             "cors_origins": allowed_origins,
+            "openai_configured": bool(OPENAI_API_KEY),
+            "openai_key_length": len(OPENAI_API_KEY) if OPENAI_API_KEY else 0,
             "timestamp": "2025-08-07"
         }
     except Exception as e:
@@ -104,6 +107,29 @@ async def health_check():
         return {
             "status": "unhealthy",
             "error": str(e)
+        }
+
+@app.get("/debug/openai")
+async def debug_openai():
+    """Debug OpenAI configuration"""
+    try:
+        from config import OPENAI_API_KEY
+        from services.gpt_handler import GPTService
+        
+        gpt_service = GPTService()
+        
+        return {
+            "openai_key_present": bool(OPENAI_API_KEY),
+            "openai_key_length": len(OPENAI_API_KEY) if OPENAI_API_KEY else 0,
+            "openai_key_prefix": OPENAI_API_KEY[:10] + "..." if OPENAI_API_KEY and len(OPENAI_API_KEY) > 10 else "None",
+            "client_initialized": gpt_service.client is not None,
+            "environment": ENVIRONMENT
+        }
+    except Exception as e:
+        logger.error(f"OpenAI debug failed: {e}")
+        return {
+            "error": str(e),
+            "openai_configured": False
         }
 
 # Global exception handler

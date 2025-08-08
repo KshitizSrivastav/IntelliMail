@@ -11,12 +11,16 @@ logger = logging.getLogger(__name__)
 class GPTService:
     def __init__(self):
         try:
+            logger.info(f"🔑 OPENAI_API_KEY present: {bool(OPENAI_API_KEY)}")
+            logger.info(f"🔑 OPENAI_API_KEY length: {len(OPENAI_API_KEY) if OPENAI_API_KEY else 0}")
+            logger.info(f"🔑 OPENAI_API_KEY starts with: {OPENAI_API_KEY[:10] + '...' if OPENAI_API_KEY and len(OPENAI_API_KEY) > 10 else 'None'}")
+            
             if not OPENAI_API_KEY:
-                logger.warning("⚠️  OpenAI API key not provided")
+                logger.error("❌ OpenAI API key not provided")
                 self.client = None
             else:
                 self.client = openai.OpenAI(api_key=OPENAI_API_KEY)
-                logger.info("✅ OpenAI client initialized")
+                logger.info("✅ OpenAI client initialized successfully")
         except Exception as e:
             logger.error(f"❌ Failed to initialize OpenAI client: {e}")
             self.client = None
