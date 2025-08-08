@@ -31,7 +31,7 @@ logger.info(f"🔌 Port: {os.getenv('PORT', '8000')}")
 # Dynamic CORS origins based on environment
 if ENVIRONMENT == "production":
     allowed_origins = [
-        "https://intelli-mail-lyart.vercel.app/",  # Replace with your actual Vercel domain
+        "https://intelli-mail-lyart.vercel.app",  # No trailing slash
         "https://*.vercel.app",  # Allow all Vercel preview deployments
     ]
 else:
