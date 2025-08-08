@@ -11,7 +11,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 
-from config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI, GMAIL_SCOPES, JWT_SECRET_KEY
+from config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI, GMAIL_SCOPES, JWT_SECRET_KEY, FRONTEND_URL
 
 router = APIRouter()
 security = HTTPBearer()
@@ -197,7 +197,7 @@ async def google_auth_callback_get(code: str, state: str = None):
         jwt_token = jwt.encode(jwt_payload, JWT_SECRET_KEY, algorithm="HS256")
         
         # Redirect to frontend with tokens
-        frontend_url = f"http://localhost:3000/auth/callback?token={jwt_token}&access_token={credentials.token}"
+        frontend_url = f"{FRONTEND_URL}/auth/callback?token={jwt_token}&access_token={credentials.token}"
         
         # Return HTML that redirects to frontend
         html_content = f"""

@@ -16,6 +16,9 @@ GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
 GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "https://intellimail-90io.onrender.com/auth/callback")
 
+# Frontend URL Configuration
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://intelli-mail-lyart.vercel.app" if ENVIRONMENT == "production" else "http://localhost:3000")
+
 # JWT Configuration
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-here")
 if JWT_SECRET_KEY == "your-secret-key-here" and ENVIRONMENT == "production":
