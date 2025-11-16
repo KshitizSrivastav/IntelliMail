@@ -113,6 +113,7 @@ Access the application at:
 2. Create a feature branch
 3. Make your changes
 4. Submit a pull request
+5. Wait for Review
 
 ## License
 
